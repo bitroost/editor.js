@@ -330,6 +330,7 @@ export default class Tools extends Module {
       api: this.Editor.API.methods,
       config,
       data,
+      editor: this.Editor,
     };
 
     return new plugin(constructorOptions);
@@ -349,6 +350,7 @@ export default class Tools extends Module {
     const constructorOptions = {
       api: this.Editor.API.methods,
       config: (toolSettings[this.USER_SETTINGS.CONFIG] || {}) as ToolSettings,
+      editor: this.Editor,
     };
 
     return new tool(constructorOptions) as InlineTool;

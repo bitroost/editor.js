@@ -12,7 +12,9 @@
     "editorjs"
   ],
   "scripts": {
-    "build": "rimraf dist/* && yarn svg && yarn build:prod",
+    "copydist": "cp ./dist/* ../bitroost_django/django-docbook/js_modules/@br_editorjs/ && cp ./dist/* ../bitroost_django/django-blogbook/js_modules/@br_editorjs/",
+    "build": "rimraf dist/* && npm run svg && npm run build:prod && npm run copydist",
+    "ybuild": "rimraf dist/* && yarn svg && yarn build:prod",
     "build:win": "rimraf dist && yarn svg:win && yarn build:prod",
     "build:dev": "webpack --mode development --progress --display-error-details --display-entrypoints --watch",
     "build:prod": "webpack --mode production",

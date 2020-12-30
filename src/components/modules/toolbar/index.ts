@@ -131,9 +131,9 @@ export default class Toolbar extends Module {
     const tooltipContent = $.make('div');
 
     tooltipContent.appendChild(document.createTextNode('Add'));
-    tooltipContent.appendChild($.make('div', this.CSS.plusButtonShortcut, {
-      textContent: '⇥ Tab',
-    }));
+    // tooltipContent.appendChild($.make('div', this.CSS.plusButtonShortcut, {
+    //   textContent: '⇥ Tab',
+    // }));
 
     this.Editor.Tooltip.onHover(this.nodes.plusButton, tooltipContent);
 
@@ -198,26 +198,43 @@ export default class Toolbar extends Module {
     }
 
     const { isMobile } = this.Editor.UI;
-    const blockHeight = currentBlock.offsetHeight;
+    const blockWrapperHeight = currentBlock.offsetHeight;
     let toolbarY = currentBlock.offsetTop;
+
+    const currentBlockWrapperPaddingTop = parseFloat(
+      window.getComputedStyle(currentBlock, null).getPropertyValue('padding-top'),
+    );
+    // const currentBlockPaddingBottom = parseFloat(
+    //   window.getComputedStyle(currentBlock, null).getPropertyValue('padding-bottom'),
+    // );
+    const currentNode = currentBlock.querySelector('.ce-block__content > *');
+    const currentNodeHeight = currentNode.clientHeight;
+    // console.log('currentNodeHeight', currentNodeHeight);
 
     /**
      * 1) On desktop — Toolbar at the top of Block, Plus/Toolbox moved the center of Block
      * 2) On mobile — Toolbar at the bottom of Block
      */
     if (!isMobile) {
-      const contentOffset = Math.floor(blockHeight / 2);
+      // const contentOffset = Math.floor(blockHeight / 2);
+      // this.nodes.plusButton.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+      // this.Editor.Toolbox.nodes.toolbox.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
 
-      this.nodes.plusButton.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
-      this.Editor.Toolbox.nodes.toolbox.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+      toolbarY += currentBlockWrapperPaddingTop;
     } else {
-      toolbarY += blockHeight;
+      toolbarY += blockWrapperHeight;
     }
 
     /**
      * Move Toolbar to the Top coordinate of Block
      */
     this.nodes.wrapper.style.transform = `translate3D(0, ${Math.floor(toolbarY)}px, 0)`;
+    this.nodes.wrapper.style.cssText += `--c_blockheight: ${currentNodeHeight}px;`;
+
+    this.nodes.wrapper.className = [
+      ...[this.CSS.toolbar, this.CSS.toolbarOpened],
+      ...[...currentNode.classList].map((name) => 's_' + name),
+    ].join(' ');
   }
 
   /**
@@ -268,7 +285,9 @@ export default class Toolbar extends Module {
    */
   public get plusButton(): {hide: () => void, show: () => void} {
     return {
-      hide: () => this.nodes.plusButton.classList.add(this.CSS.plusButtonHidden),
+      hide: () => {
+        this.nodes.plusButton.classList.add(this.CSS.plusButtonHidden);
+      },
       show: () => {
         if (this.Editor.Toolbox.isEmpty) {
           return;

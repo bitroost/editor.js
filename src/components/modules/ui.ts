@@ -304,7 +304,8 @@ export default class UI extends Module {
     this.Editor.Listeners.on(this.nodes.redactor,
       'touchstart',
       (event) => this.documentTouched(event as MouseEvent),
-      true,
+      // true,
+      { capture: true, passive: true },
     );
 
     this.Editor.Listeners.on(document, 'keydown', (event) => this.documentKeydown(event as KeyboardEvent), true);
@@ -531,6 +532,14 @@ export default class UI extends Module {
       const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
 
       clickedNode = document.elementFromPoint(clientX, clientY) as HTMLElement;
+
+      const clickPosY = window.scrollY + clientY;
+      const lastBlockEl = this.Editor.BlockManager.lastBlock.holder;
+      const lastBlockY = window.scrollY + lastBlockEl.getBoundingClientRect().top + lastBlockEl.clientHeight;
+      if (clickPosY < lastBlockY) {
+        return;
+      }
+      // console.log('clickPosY', clickPosY, 'lastBlockY', lastBlockY);
     }
 
     /**
@@ -563,7 +572,8 @@ export default class UI extends Module {
     /**
      * Hide the Plus Button
      */
-    this.Editor.Toolbar.plusButton.hide();
+    // this.Editor.Toolbar.plusButton.hide();
+    this.Editor.Toolbar.plusButton.show();
   }
 
   /**

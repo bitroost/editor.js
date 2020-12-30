@@ -121,6 +121,11 @@ export default class BlockSettings extends Module {
     this.Editor.Events.emit(this.events.opened);
 
     this.flipper.activate(this.blockTunesButtons);
+
+    if (!this.Editor.UI.isMobile) {
+      this.Editor.Toolbox.close();
+      this.Editor.Toolbar.plusButton.hide();
+    }
   }
 
   /**
@@ -141,6 +146,8 @@ export default class BlockSettings extends Module {
 
     /** Clear focus on active button */
     this.flipper.deactivate();
+
+    this.Editor.Toolbar.plusButton.show();
   }
 
   /**

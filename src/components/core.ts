@@ -95,7 +95,7 @@ export default class Core {
           /**
            * Resolve this.isReady promise
            */
-          onReady();
+          onReady(this);
         }, 500);
       })
       .catch((error) => {

@@ -46,7 +46,8 @@ export default class EditorJS {
     /**
      * Set default onReady function
      */
-    let onReady = () => {};
+    // let onReady = () => {};
+    let onReady = (editorCore) => editorCore;
 
     /**
      * If `onReady` was passed in `configuration` then redefine onReady function
@@ -65,9 +66,11 @@ export default class EditorJS {
      * as it can be used before other API methods are exported
      * @type {Promise<void>}
      */
-    this.isReady = editor.isReady.then(() => {
+    this.isReady = editor.isReady.then((editorCore) => {
       this.exportAPI(editor);
-      onReady();
+
+      // console.log('onReady', editorCore);
+      onReady(editorCore);
     });
   }
 
